@@ -51,7 +51,7 @@ export default function App() {
     <>
       <Navbar user={user} onLogout={() => setUser(null)} />
       <main>
-        {user.role === 'ADMIN' ? <Dashboard /> : <PortalPaciente user={user} />}
+        {user.role === 'ADMIN' ? <Dashboard user={user} /> : <PortalPaciente user={user} />}
       </main>
     </>
   );

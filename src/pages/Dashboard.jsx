@@ -23,6 +23,7 @@ export default function Dashboard({ user }) {
   const [buscando, setBuscando] = useState(false);
 
   useEffect(() => {
+    if (!user?.token) return;
     const cargar = async () => {
       try {
         const token = await auth.currentUser.getIdToken();
@@ -44,7 +45,7 @@ export default function Dashboard({ user }) {
       }
     };
     cargar();
-  }, []);
+  }, [user?.token]);
 
   const buscarPaciente = async () => {
     if (!rutBusqueda.trim()) return;
