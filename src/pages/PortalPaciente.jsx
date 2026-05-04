@@ -22,11 +22,10 @@ export default function PortalPaciente({ user }) {
     const cargar = async () => {
       try {
         const token = await auth.currentUser.getIdToken();
-        // Usamos uid como pacienteId — ajustar si el sistema usa otro ID
         const [l, c, n] = await Promise.all([
-          apiFetch(`/api/listas/paciente/${user.uid}`, token).catch(() => []),
-          apiFetch(`/api/citas/paciente/${user.uid}`, token).catch(() => []),
-          apiFetch(`/api/pacientes/notificaciones/paciente/${user.uid}`, token).catch(() => []),
+          apiFetch(`/api/listas/paciente/${user.email}`, token).catch(() => []),
+          apiFetch(`/api/citas/paciente/${user.email}`, token).catch(() => []),
+          apiFetch(`/api/pacientes/notificaciones/paciente/${user.email}`, token).catch(() => []),
         ]);
         setListas(l);
         setCitas(c);
@@ -59,7 +58,7 @@ export default function PortalPaciente({ user }) {
 
         {error && (
           <div style={{ backgroundColor: 'var(--status-high-bg)', color: 'var(--status-high-text)', padding: '1rem', borderRadius: '8px', marginBottom: '2rem', fontWeight: 600 }}>
-            ⚠️ {error}
+             {error}
           </div>
         )}
 
