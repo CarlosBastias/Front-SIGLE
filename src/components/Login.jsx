@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase'; 
 
-export default function Login({ onMockLogin }) {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -11,15 +11,6 @@ export default function Login({ onMockLogin }) {
     e.preventDefault();
     setError(null);
     
-    // Si la API key está vacía/mockeada
-    if (auth.app.options.apiKey.includes('TuConfiguracionAqui')) {
-      if (email.includes('admin')) {
-        onMockLogin({ role: 'ADMIN', name: 'Dr. Administrador V.', email: email });
-      } else {
-        onMockLogin({ role: 'PACIENTE', name: 'Carlos Bastías M.', email: email });
-      }
-      return;
-    }
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -54,7 +45,7 @@ export default function Login({ onMockLogin }) {
               <input 
                 type="email" 
                 className="input-control"
-                placeholder="usuario@ejemplo.cl (usa 'admin' para entrar como médico)"
+                placeholder="usuario@ejemplo.cl"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

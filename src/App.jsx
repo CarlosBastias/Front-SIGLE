@@ -47,7 +47,7 @@ export default function App() {
   }
 
   if (!user) {
-    return <Login onMockLogin={setUser} />;
+    return <Login />;
   }
 
   return (
