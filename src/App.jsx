@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './firebase'; 
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebase';
 
 // Importación de Estilos Modulares
 import './styles/global.css';
@@ -21,13 +21,16 @@ export default function App() {
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const isFirebaseAdmin = firebaseUser.email.includes("admin");
+        const token = await firebaseUser.getIdToken();
         setUser({
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           role: isFirebaseAdmin ? 'ADMIN' : 'PACIENTE',
-          name: isFirebaseAdmin ? 'MD. Administrador' : 'Carlos Bastías M.',
-          token: await firebaseUser.getIdToken()
+          name: isFirebaseAdmin ? 'MD. Administrador' : firebaseUser.email,
+          token: token
         });
+      } else {
+        setUser(null);
       }
       setLoading(false);
     });
@@ -36,9 +39,9 @@ export default function App() {
 
   if (loading) {
     return (
-      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', flexDirection: 'column'}}>
-        <div style={{fontSize: '3rem', color: 'var(--color-primary)', animation: 'fadeInUp 1s ease infinite alternate'}}>✚</div>
-        <div style={{marginTop: '1rem', color: 'var(--text-gray)', fontWeight: '600', letterSpacing: '0.05em'}}>Autenticando Plataforma SEGURA...</div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', flexDirection: 'column' }}>
+        <div style={{ fontSize: '3rem', color: 'var(--color-primary)', animation: 'fadeInUp 1s ease infinite alternate' }}>✚</div>
+        <div style={{ marginTop: '1rem', color: 'var(--text-gray)', fontWeight: '600', letterSpacing: '0.05em' }}>Autenticando Plataforma SEGURA...</div>
       </div>
     );
   }
@@ -49,7 +52,7 @@ export default function App() {
 
   return (
     <>
-      <Navbar user={user} onLogout={() => setUser(null)} />
+      <Navbar user={user} onLogout={() => { signOut(auth); setUser(null); }} />
       <main>
         {user.role === 'ADMIN' ? <Dashboard user={user} /> : <PortalPaciente user={user} />}
       </main>
