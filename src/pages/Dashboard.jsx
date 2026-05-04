@@ -24,14 +24,15 @@ export default function Dashboard({ user }) {
 
   useEffect(() => {
     if (!user?.token) return;
+    console.log('TOKEN:', user?.token);
+    console.log('HEADER:', `Bearer ${user?.token?.substring(0, 20)}...`);
     const cargar = async () => {
       try {
-        const token = await auth.currentUser.getIdToken();
         const [m, e, l, med] = await Promise.all([
-          apiFetch('/api/dashboard/metricas', token),
-          apiFetch('/api/establecimientos', token),
-          apiFetch('/api/listas', token),
-          apiFetch('/api/citas/medicos', token),
+          apiFetch('/api/dashboard/metricas', user.token),
+          apiFetch('/api/establecimientos', user.token),
+          apiFetch('/api/listas', user.token),
+          apiFetch('/api/citas/medicos', user.token),
         ]);
         setMetricas(m);
         setEstablecimientos(e);
@@ -46,7 +47,7 @@ export default function Dashboard({ user }) {
     };
     cargar();
   }, [user?.token]);
-
+  
   const buscarPaciente = async () => {
     if (!rutBusqueda.trim()) return;
     setBuscando(true);
@@ -72,7 +73,7 @@ export default function Dashboard({ user }) {
   if (error) return (
     <div className="container" style={{ paddingTop: '3rem' }}>
       <div style={{ backgroundColor: 'var(--status-high-bg)', color: 'var(--status-high-text)', padding: '1.5rem', borderRadius: '8px', fontWeight: 600 }}>
-        ⚠️ {error}
+         {error}
       </div>
     </div>
   );
